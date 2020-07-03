@@ -3,6 +3,8 @@
 namespace SilverCommerce\GroupedProducts;
 
 use Product;
+use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Core\Injector\Injector;
 use SilverCommerce\CatalogueAdmin\Forms\GridField\GridFieldConfig_CatalogueRelated;
 
 /**
@@ -42,6 +44,64 @@ class ProductGroup extends Product
     public function getSortedProducts()
     {
         return $this->Products()->sort('SortOrder', 'ASC');
+    }
+
+    /**
+     * Are we viewing a child of this product group?
+     *
+     * @return GroupedProduct|null 
+     */
+    protected function getProductFromRequest()
+    {
+        $request = Injector::inst()->get(HTTPRequest::class);
+        $p = $request->getVar('p');
+        $grouped = null;
+
+        if (!empty($p)) {
+            $grouped = $this->Products()->find('URLSegment', $p);
+        }
+
+        if (!empty($grouped)) {
+            return $grouped;
+        }
+
+        return;
+    }
+
+    /**
+     * If viewing a grouped product, we want to return that product's price
+     *
+     * @return float
+     */
+    public function getNoTaxPrice()
+    {
+        $grouped = $this->getProductFromRequest();
+
+        return !empty($grouped) ? $grouped->getNoTaxPrice() : parent::getNoTaxPrice();
+    }
+
+    /**
+     * If viewing a grouped product, we want to return that product's tax
+     *
+     * @return float
+     */
+    public function getTaxAmount()
+    {
+        $grouped = $this->getProductFromRequest();
+
+        return !empty($grouped) ? $grouped->getTaxAmount() : parent::getTaxAmount();
+    }
+
+    /**
+     * If viewing a grouped product, we want to return that product's tax string
+     *
+     * @return string
+     */
+    public function getTaxString($include_tax = null)
+    {
+        $grouped = $this->getProductFromRequest();
+
+        return !empty($grouped) ? $grouped->getTaxString() : parent::getTaxString();
     }
 
     /**
