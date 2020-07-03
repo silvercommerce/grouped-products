@@ -45,6 +45,62 @@ class GroupedProduct extends Product
     ];
 
     /**
+     * If price is not set, try to get price of parent
+     *
+     * @return float
+     */
+    public function getBasePrice()
+    {
+        if ($this->dbObject('BasePrice')->getValue() > 0) {
+           return parent::getBasePrice();
+        }
+
+        return $this->ProductGroup()->getBasePrice();
+    }
+
+    /**
+     * If price is not set, try to get price of parent
+     *
+     * @return float
+     */
+    public function getNoTaxPrice()
+    {
+        if ($this->dbObject('BasePrice')->getValue() > 0) {
+           return parent::getNoTaxPrice();
+        }
+
+        return $this->ProductGroup()->getNoTaxPrice();
+    }
+
+    /**
+     * If price is not set, try to get tax of parent
+     *
+     * @return float
+     */
+    public function getTaxAmount()
+    {
+        if ($this->dbObject('BasePrice')->getValue() > 0) {
+            return parent::getTaxAmount();
+        }
+
+        return $this->ProductGroup()->getTaxAmount();
+    }
+
+    /**
+     * If price is not set, try to get tax string of parent
+     *
+     * @return string
+     */
+    public function getTaxString($include_tax = null)
+    {
+        if ($this->dbObject('BasePrice')->getValue() > 0) {
+            return parent::getTaxString();
+        }
+
+        return $this->ProductGroup()->getTaxString();
+    }
+
+    /**
      * Overwrite default relative link to link to the parent
      *
      * @param string $action See {@link Link()}
@@ -82,6 +138,20 @@ class GroupedProduct extends Product
                         'Related'
                     ]
                 );
+
+                /**
+                 * @var \SilverStripe\Forms\CompositeField
+                 */
+                $price_fields = $fields->fieldByName('Root.Main.PriceFields');
+
+                if (!empty($price_fields)) {
+                    $price_fields->setDescription(
+                        _t(
+                            __CLASS__ . ".PriceDescription",
+                            "Leaving blank will inherit price from group"
+                        )
+                    );
+                }
             }
         );
 
