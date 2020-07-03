@@ -77,7 +77,11 @@ class ProductGroup extends Product
     {
         $grouped = $this->getProductFromRequest();
 
-        return !empty($grouped) ? $grouped->getNoTaxPrice() : parent::getNoTaxPrice();
+        if (!empty($grouped) && $grouped->dbObject('BasePrice')->getValue() > 0) {
+            return $grouped->getNoTaxPrice();
+        }
+        
+        return parent::getNoTaxPrice();
     }
 
     /**
@@ -89,7 +93,11 @@ class ProductGroup extends Product
     {
         $grouped = $this->getProductFromRequest();
 
-        return !empty($grouped) ? $grouped->getTaxAmount() : parent::getTaxAmount();
+        if (!empty($grouped) && $grouped->dbObject('BasePrice')->getValue() > 0) {
+            return $grouped->getTaxAmount();
+        }
+        
+        return parent::getTaxAmount();
     }
 
     /**
@@ -101,7 +109,11 @@ class ProductGroup extends Product
     {
         $grouped = $this->getProductFromRequest();
 
-        return !empty($grouped) ? $grouped->getTaxString() : parent::getTaxString();
+        if (!empty($grouped) && $grouped->dbObject('BasePrice')->getValue() > 0) {
+            return $grouped->getTaxString($include_tax);
+        }
+        
+        return parent::getTaxString($include_tax);
     }
 
     /**

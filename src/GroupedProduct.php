@@ -94,10 +94,10 @@ class GroupedProduct extends Product
     public function getTaxString($include_tax = null)
     {
         if ($this->dbObject('BasePrice')->getValue() > 0) {
-            return parent::getTaxString();
+            return parent::getTaxString($include_tax);
         }
 
-        return $this->ProductGroup()->getTaxString();
+        return $this->ProductGroup()->getTaxString($include_tax);
     }
 
     /**
