@@ -1,0 +1,6 @@
+---
+Name: 'groupedproductsconfig'
+---
+SilverCommerce\OrdersAdmin\Model\LineItem:
+  extensions:
+    - SilverCommerce\GroupedProducts\LineItemExtension
