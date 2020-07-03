@@ -18,7 +18,7 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/silvercommerce/catalogue-admin/issues"
+        "issues": "https://github.com/silvercommerce/grouped-products/issues"
     },
     "require": {
         "silverstripe/framework": "^4.2",
