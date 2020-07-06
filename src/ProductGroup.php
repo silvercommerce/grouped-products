@@ -6,6 +6,7 @@ use Product;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Injector\Injector;
 use SilverCommerce\CatalogueAdmin\Forms\GridField\GridFieldConfig_CatalogueRelated;
+use SilverStripe\ORM\ArrayList;
 
 /**
  * Product that acts as a "Parent" for a grouping of products
@@ -44,6 +45,25 @@ class ProductGroup extends Product
     public function getSortedProducts()
     {
         return $this->Products()->sort('SortOrder', 'ASC');
+    }
+
+    /**
+     * Compile sorted images from all children
+     *
+     * @return \SilverStripe\ORM\SS_List
+     */
+    public function SortedImages()
+    {
+        $images = ArrayList::create();
+        $images->merge(parent::SortedImages());
+
+        foreach($this->getSortedProducts() as $product) {
+            if ($product->Images()->exists()) {
+                $images->merge($product->SortedImages());
+            }
+        }
+
+        return $images;
     }
 
     /**

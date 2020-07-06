@@ -117,6 +117,20 @@ class GroupedProduct extends Product
     }
 
     /**
+     * If no images set on grouped product, try to get from group
+     *
+     * @return \SilverStripe\ORM\SS_List
+     */
+    public function SortedImages()
+    {
+        if (!$this->Images()->exists() && $this->ProductGroup()->Images()->exists()) {
+            return $this->ProductGroup()->SortedImages();
+        }
+
+        return parent::SortedImages();
+    }
+
+    /**
      * Simplify product fields
      *
      * @return \SilverStripe\Forms\FieldList
