@@ -44,7 +44,10 @@ class ProductGroup extends Product
 
     public function getSortedProducts()
     {
-        return $this->Products()->sort('SortOrder', 'ASC');
+        return $this
+            ->Products()
+            ->filter('Disabled', 0)
+            ->sort('SortOrder', 'ASC');
     }
 
     /**
