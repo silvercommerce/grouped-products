@@ -3,8 +3,8 @@
 namespace SilverCommerce\GroupedProducts;
 
 use SilverStripe\View\ArrayData;
-use SilverStripe\View\Requirements;
 use SilverStripe\Control\Controller;
+use SilverStripe\Core\Manifest\ModuleLoader;
 use SilverStripe\Forms\OptionsetField;
 
 /**
@@ -34,9 +34,6 @@ class ProductGroupOptionsetField extends OptionsetField
      */
     protected function getFieldOption($value, $title, $odd)
     {
-        /** @var \Product */
-        $item = GroupedProduct::get()->byID($value);
-
         return ArrayData::create(
             [
                 'ID' => $this->getOptionID($value),
@@ -50,6 +47,36 @@ class ProductGroupOptionsetField extends OptionsetField
                 'isDisabled' => $this->isDisabledValue($value)
             ]
         );
+    }
+
+    /**
+     * Overwrite disabled value to check stock levels (if installed)
+     *
+     * @param string $value
+     * @return bool
+     */
+    protected function isDisabledValue($value)
+    {
+        /** @var \Product */
+        $product = GroupedProduct::get()->byID($value);
+        $manifest = ModuleLoader::inst()->getManifest();
+
+        if (empty($product)) {
+            return true;
+        }
+
+        // If stock module not installed, we can revert to default
+        if (!$manifest->moduleExists('silvercommerce/stock')) {
+            return parent::isDisabledValue($value);
+        }
+
+        // If product is stocked, not out of stock, or allowing overwrites, return default
+        if (!$product->Stocked || ($product->Stocked && ($product->AvailableOutOfStock || !$product->isStockOut()))) {
+            return parent::isDisabledValue($value);
+        }
+
+        // Finally, disable this product
+        return true;
     }
 
     /**
