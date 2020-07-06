@@ -4,3 +4,7 @@ Name: 'groupedproductsconfig'
 SilverCommerce\OrdersAdmin\Model\LineItem:
   extensions:
     - SilverCommerce\GroupedProducts\LineItemExtension
+
+SilverCommerce\CatalogueAdmin\Model\CatalogueProduct:
+  export_fields:
+    - ProductGroupID
