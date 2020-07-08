@@ -38,6 +38,10 @@ class ProductGroupController extends ProductController
             ->setForm($form)
         );
 
+        /** @var \SilverStripe\Forms\RequiredFields */
+        $validator = $form->getValidator();
+        $validator->addRequiredField('ID');
+
         // If product has been selected via the URL, then automatically set
         $request = $this->getRequest();
         $product_url = $request->getVar(self::PRODUCT_QUERY_STRING);

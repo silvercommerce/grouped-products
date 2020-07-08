@@ -13,3 +13,7 @@
 
 * Filter products from a group that are disabled
 * Disable items that are out of stock (if stock keeping is installed)
+
+## 1.0.3
+
+* Ensure that the selection field is required
